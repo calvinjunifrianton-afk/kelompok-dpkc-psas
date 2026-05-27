@@ -542,16 +542,16 @@
     <div id="homePage">
         <div class="banner">
             <div class="slides fade">
-                <img src="images/banner_utama.jpeg" alt="Legend Four Game">
+                <img src="1.png" alt="Legend Four Game">
             </div>
             <div class="slides fade">
-                <img src="images/nexora.jpeg" alt="Nexora Esports">
+                <img src="2.png" alt="Nexora Esports">
             </div>
              <div class="slides fade">
-                <img src="images/lunaris.jpeg" alt="lunaris Esports">
+                <img src="3.png" alt="lunaris Esports">
             </div>
              <div class="slides fade">
-                <img src="images/nexus.jpeg" alt="Nexus Esports">
+                <img src="4.png" alt="Nexus Esports">
             </div>
         </div>
         
@@ -624,7 +624,11 @@
     <small>© 2026 Legend Four. All Rights Reserved. </small>
 </footer>
 
-<script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="Mid-client-WEeXpDQan0i5fZdH"></script>
+<script 
+type="text/javascript"
+src="https://app.sandbox.midtrans.com/snap/snap.js"
+data-client-key="Mid-client-WEeXpDQan0i5fZdH">
+</script>
 
 <script>
 const products = [
@@ -908,11 +912,15 @@ async function checkout() {
     document.getElementById("loading").style.display = "flex";
 
     try {
-        const response = await fetch("http://localhost:3000/token", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ total: total })
-        });
+       const response = await fetch("http://localhost:3000/token", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+        total: Number(total)
+    })
+});
 
         const data = await response.json();
 
