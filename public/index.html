@@ -492,6 +492,65 @@
     margin-bottom:15px;
 }
 
+
+.discount-section{
+    background:#111827;
+    padding:15px;
+    border-radius:10px;
+    margin-bottom:15px;
+}
+
+.discount-input-row{
+    display:flex;
+    gap:10px;
+}
+
+.discount-input-row input{
+    flex:1;
+    padding:10px;
+    border:none;
+    border-radius:8px;
+    background:#1e293b;
+    color:white;
+}
+
+.btn-apply-discount{
+    background:#2563eb;
+    border:none;
+    color:white;
+    padding:10px 15px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.discount-status{
+    margin-top:10px;
+    font-size:13px;
+    color:#22c55e;
+}
+
+.applied-badge{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:10px;
+}
+
+.btn-remove-discount{
+    background:#ef4444;
+    color:white;
+    border:none;
+    padding:5px 10px;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+.total-row{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:10px;
+}
+
 .back-btn:hover{
     background:#1d4ed8;
 }
@@ -592,10 +651,90 @@ cursor:pointer;">
         <h2>Keranjang Belanja</h2>
         <br>
         <div id="cartList"></div>
-        <div class="total-box">
-            <h3>Total: <span id="totalPrice">Rp 0</span></h3>
-            <button class="checkout-btn" onclick="checkout()">Checkout via Midtrans</button>
+        <div class="discount-section">
+
+    <label>🏷️ Kode Diskon</label>
+
+    <div id="discountInputArea">
+        <div class="discount-input-row">
+
+            <input
+                type="text"
+                id="discountInput"
+                placeholder="Masukkan kode diskon..."
+                maxlength="20">
+
+            <button
+                class="btn-apply-discount"
+                onclick="applyDiscount()">
+                Terapkan
+            </button>
+
         </div>
+    </div>
+
+    <div id="appliedBadge" style="display:none;">
+        <div class="applied-badge">
+
+            <div>
+                <div id="appliedCodeLabel"></div>
+            </div>
+
+            <button
+                class="btn-remove-discount"
+                onclick="removeDiscount()">
+                Hapus
+            </button>
+
+        </div>
+    </div>
+
+    <div
+        id="discountStatus"
+        class="discount-status">
+    </div>
+
+</div>
+
+       <div class="total-box">
+
+    <div class="total-row">
+        <span>Subtotal</span>
+        <span id="subtotalPrice">Rp 0</span>
+    </div>
+
+    <div class="total-row"
+         id="discountRow"
+         style="display:none;">
+
+        <span>Diskon</span>
+
+        <span id="discountAmountDisplay"
+              style="color:#22c55e;">
+            Rp 0
+        </span>
+
+    </div>
+
+    <hr style="margin:10px 0;border-color:#334155;">
+
+    <h3>
+        Total:
+        <span id="totalPrice">
+            Rp 0
+        </span>
+    </h3>
+
+    <button
+        class="checkout-btn"
+        onclick="checkout()">
+
+        Checkout via Midtrans
+
+    </button>
+
+</div>
+
     </div>
 </div>
 <div class="cart-page" id="jokiPage" style="display:none;">
@@ -759,23 +898,23 @@ data-client-key="Mid-client-WEeXpDQan0i5fZdH">
 
 <script>
 const products = [
-    { id: 1, game: "Mobile Legends", title: "Akun ML Collector Juragan", price: 670000, image: "ml 1.jpeg", discount: "DISKON 50%", status: "READY", badge: "BEST SELLER", rating: "★★★★★" },
+    { id: 1, game: "Mobile Legends", title: "Akun ML Collector Juragan", price: 670000, image: "ml 1.jpeg", discount: "DISKON 50%", status: "READY", badge: "BEST SELLER",},
 
-    { id: 2, game: "Free Fire", title: "Akun Sultan FF Full Evo", price: 15000000, image: "ff 1.jpeg", discount: "DISKON 20%", status: "LIMITED", badge: "HOT ITEM", rating: "★★★★" },
+    { id: 2, game: "Free Fire", title: "Akun Sultan FF Full Evo", price: 15000000, image: "ff 1.jpeg", discount: "DISKON 20%", status: "LIMITED", badge: "HOT ITEM", },
 
-    { id: 3, game: "Mobile Legends", title: "Akun ML Collector Galaksi", price: 45000000, image: "ml 2.jpeg", discount: "DISKON 50%", status: "READY", badge: "BEST SELLER", rating: "★★★★★" },
+    { id: 3, game: "Mobile Legends", title: "Akun ML Collector Ternama", price: 450000, image: "ml 2.jpeg", discount: "DISKON 50%", status: "READY", badge: "BEST SELLER", },
 
-    { id: 4, game: "Free Fire", title: "Akun FF Ganteng Max 4", price: 800000, image: "ff 2.jpeg", discount: "DISKON 10%", status: "READY", badge: "BEST SELLER", rating: "★★★★★" },
+    { id: 4, game: "Free Fire", title: "Akun FF Spek Ganteng Max 4", price: 800000, image: "ff 2.jpeg", discount: "DISKON 10%", status: "READY", badge: "BEST SELLER",  },
 
-    { id: 5, game: "Mobile Legends", title: "Akun ML Collector Juragan", price: 2000000, image: "ml 3.jpeg", discount: "DISKON 15%", status: "READY", badge: "POPULER", rating: "★★★★" },
+    { id: 5, game: "Mobile Legends", title: "Akun ML Collector Juragan", price: 2000000, image: "ml 3.jpeg", discount: "DISKON 15%", status: "READY", badge: "POPULER",  },
 
-    { id: 6, game: "Free Fire", title: "Akun FF Max 2 Vault 400+", price: 800000, image: "ff 3.jpeg", discount: "DISKON 30%", status: "READY", badge: "BEST SELLER", rating: "★★★★★" },
+    { id: 6, game: "Free Fire", title: "Akun FF Max 2 Vault 400+", price: 800000, image: "ff 3.jpeg", discount: "DISKON 30%", status: "READY", badge: "BEST SELLER", },
 
-    { id: 7, game: "Mobile Legends", title: "Starter Akun ML Murah", price: 60000, image: "ml 4.jpeg", discount: "HARGA PAS", status: "READY", badge: "PROMO", rating: "★★★★★" },
+    { id: 7, game: "Mobile Legends", title: "Akun ML Collector Juragan", price: 600000, image: "ml 4.jpeg", discount: "HARGA PAS", status: "READY", badge: "PROMO",  },
 
-    { id: 8, game: "Free Fire", title: "Akun FF Max 3 Vault 450+", price: 410000, image: "ff 4.jpeg", discount: "HARGA PAS", status: "READY", badge: "PROMO", rating: "★★★★★" },
+    { id: 8, game: "Free Fire", title: "Akun FF Max 3 Vault 450+", price: 980000, image: "ff 4.jpeg", discount: "HARGA PAS", status: "READY", badge: "PROMO",  },
 
-    { id: 9, game: "Mobile Legends", title: "Akun ML Collector Ternama", price: 500000, image: "ml 5.jpeg", discount: "HARGA PAS", status: "READY", badge: "PROMO", rating: "★★★★★" }
+    { id: 9, game: "Mobile Legends", title: "Akun ML Collector Ternama", price: 500000, image: "ml 5.jpeg", discount: "HARGA PAS", status: "READY", badge: "PROMO",  }
 ];
 
 
@@ -784,7 +923,27 @@ let cart = [];
 let wishlist = [];
 let jokiCart = [];
 let slideIndex = 0;
-let base64Avatar = ""; 
+let base64Avatar = "";
+
+const DISCOUNT_CODES = [
+    {
+        code:"LEGEND10",
+        type:"percent",
+        value:10
+    },
+    {
+        code:"HEMAT50K",
+        type:"fixed",
+        value:50000
+    },
+    {
+        code:"NEWMEMBER",
+        type:"percent",
+        value:15
+    }
+];
+
+let appliedDiscount = null;
 
 
 function pesanJoki(title, price){
@@ -849,6 +1008,67 @@ async function checkoutJoki() {
         showToast("Server error!");
 
     }
+}
+
+function applyDiscount(){
+
+    const code =
+        document
+        .getElementById("discountInput")
+        .value
+        .trim()
+        .toUpperCase();
+
+    const found =
+        DISCOUNT_CODES.find(
+            d => d.code === code
+        );
+
+    if(!found){
+
+        document
+        .getElementById("discountStatus")
+        .innerText =
+        "Kode tidak valid";
+
+        return;
+    }
+
+    appliedDiscount = found;
+
+    document
+    .getElementById("discountStatus")
+    .innerText =
+    "Diskon berhasil digunakan";
+
+    document
+    .getElementById("appliedBadge")
+    .style.display = "block";
+
+    document
+    .getElementById("appliedCodeLabel")
+    .innerText = found.code;
+
+    renderCart();
+}
+
+function removeDiscount(){
+
+    appliedDiscount = null;
+
+    document
+    .getElementById("discountInput")
+    .value = "";
+
+    document
+    .getElementById("discountStatus")
+    .innerText = "";
+
+    document
+    .getElementById("appliedBadge")
+    .style.display = "none";
+
+    renderCart();
 }
 
 function showSlides() {
@@ -1121,8 +1341,49 @@ function renderCart() {
             </div>
         </div>`;
     });
-    document.getElementById("totalPrice").innerText = "Rp " + total.toLocaleString("id-ID");
+    
+    let discount = 0;
+
+if(appliedDiscount){
+
+    if(appliedDiscount.type === "percent"){
+
+        discount =
+        total *
+        appliedDiscount.value / 100;
+
+    }else{
+
+        discount =
+        appliedDiscount.value;
+    }
 }
+
+const finalTotal =
+total - discount;
+   document.getElementById("subtotalPrice").innerText =
+"Rp " + total.toLocaleString("id-ID");
+
+document.getElementById("totalPrice").innerText =
+"Rp " + finalTotal.toLocaleString("id-ID");
+
+if(discount > 0){
+
+    document.getElementById("discountRow")
+    .style.display = "flex";
+
+    document.getElementById("discountAmountDisplay")
+    .innerText =
+    "- Rp " +
+    discount.toLocaleString("id-ID");
+
+}else{
+
+    document.getElementById("discountRow")
+    .style.display = "none";
+}
+}
+
 
 function renderWishlist() {
     const list = document.getElementById("wishlistList");
@@ -1184,8 +1445,25 @@ async function checkout() {
         return;
     }
     // Perhitungan total harga final dikalikan dengan quantity masing-masing agar sinkron ke Midtrans
-    const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    document.getElementById("loading").style.display = "flex";
+    let total = cart.reduce(
+    (sum,item)=>
+    sum + (item.price * item.quantity),
+0);
+
+if(appliedDiscount){
+
+    if(appliedDiscount.type === "percent"){
+
+        total -=
+        total *
+        appliedDiscount.value / 100;
+
+    }else{
+
+        total -=
+        appliedDiscount.value;
+    }
+}
 
     try {
        const response = await fetch("http://localhost:3000/token", {
