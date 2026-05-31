@@ -481,6 +481,21 @@
                 transform: rotate(360deg);
             }
         }
+
+        .back-btn{
+    background:#2563eb;
+    color:white;
+    border:none;
+    padding:10px 18px;
+    border-radius:8px;
+    cursor:pointer;
+    margin-bottom:15px;
+}
+
+.back-btn:hover{
+    background:#1d4ed8;
+}
+
     </style>
 </head>
 <body>
@@ -521,7 +536,8 @@
                 </svg>
                 <span id="cartCount">0</span>
             </button>
-            <button onclick="logout()">Logout</button>
+            <button onclick="showWishlist()">❤️ Wishlist</button>
+<button onclick="logout()">Logout</button>
             
             <div class="profile-box" onclick="openProfileModal()" title="Klik untuk ubah profil">
                 <img src="https://i.pravatar.cc/100" class="profile-img" id="userAvatar" alt="Profile">
@@ -561,6 +577,17 @@
     </div>
 
     <div class="cart-page" id="cartPage">
+        <button onclick="showHome()" style="
+margin-bottom:15px;
+background:#3b82f6;
+color:white;
+border:none;
+padding:10px 15px;
+border-radius:8px;
+cursor:pointer;">
+← Kembali ke Home
+</button>
+
         <h2>Keranjang Belanja</h2>
         <br>
         <div id="cartList"></div>
@@ -569,6 +596,23 @@
             <button class="checkout-btn" onclick="checkout()">Checkout via Midtrans</button>
         </div>
     </div>
+</div>
+
+<div class="cart-page" id="wishlistPage" style="display:none;">
+    <button onclick="showHome()" style="
+margin-bottom:15px;
+background:#3b82f6;
+color:white;
+border:none;
+padding:10px 15px;
+border-radius:8px;
+cursor:pointer;">
+← Kembali ke Home
+</button>
+
+    <h2>❤️ Wishlist Saya</h2>
+    <br>
+    <div id="wishlistList"></div>
 </div>
 
 <div class="modal" id="productModal">
@@ -632,17 +676,30 @@ data-client-key="Mid-client-WEeXpDQan0i5fZdH">
 
 <script>
 const products = [
-    { id: 1, game: "Mobile Legends", title: "Akun ML Mythical Glory", price: 670000, image: "https://images.unsplash.com/photo-1612287230202-1bf1d85d1bdf?q=80&w=500", discount: "DISKON 50%", status: "READY", badge: "BEST SELLER", rating: "★★★★★" },
-    { id: 2, game: "Free Fire", title: "Akun Sultan FF Full Evo", price: 1500000, image: "https://images.unsplash.com/photo-1589241062272-c0a000072dfa?q=80&w=500", discount: "DISKON 20%", status: "LIMITED", badge: "HOT ITEM", rating: "★★★★" },
-    { id: 3, game: "Mobile Legends", title: "Akun ML Skin Collector", price: 1000000, image: "https://images.unsplash.com/photo-1553481187-be93c21490a9?q=80&w=500", discount: "DISKON 50%", status: "READY", badge: "BEST SELLER", rating: "★★★★★" },
-    { id: 4, game: "Mobile Legends", title: "Akun ML Tier Mythic V", price: 120000, image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=500", discount: "DISKON 10%", status: "READY", badge: "BEST SELLER", rating: "★★★★★" }, 
-    { id: 5, game: "Free Fire", title: "Akun FF Tier Master Murah", price: 250000, image: "https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=500", discount: "DISKON 15%", status: "READY", badge: "POPULER", rating: "★★★★" },
-    { id: 6, game: "Mobile Legends", title: "Akun ML All Hero Max", price: 800000, image: "https://images.unsplash.com/photo-1614028674026-a65e31bfd27c?q=80&w=500", discount: "DISKON 30%", status: "READY", badge: "BEST SELLER", rating: "★★★★★" },
-    { id: 7, game: "Mobile Legends", title: "Starter Akun ML Murah", price: 10000, image: "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?q=80&w=500", discount: "HARGA PAS", status: "READY", badge: "PROMO", rating: "★★★★★" }
+    { id: 1, game: "Mobile Legends", title: "Akun ML Collector Juragan", price: 670000, image: "ml 1.jpeg", discount: "DISKON 50%", status: "READY", badge: "BEST SELLER", rating: "★★★★★" },
+
+    { id: 2, game: "Free Fire", title: "Akun Sultan FF Full Evo", price: 15000000, image: "ff 1.jpeg", discount: "DISKON 20%", status: "LIMITED", badge: "HOT ITEM", rating: "★★★★" },
+
+    { id: 3, game: "Mobile Legends", title: "Akun ML Collector Galaksi", price: 45000000, image: "ml 2.jpeg", discount: "DISKON 50%", status: "READY", badge: "BEST SELLER", rating: "★★★★★" },
+
+    { id: 4, game: "Free Fire", title: "Akun FF Ganteng Max 4", price: 800000, image: "ff 2.jpeg", discount: "DISKON 10%", status: "READY", badge: "BEST SELLER", rating: "★★★★★" },
+
+    { id: 5, game: "Mobile Legends", title: "Akun ML Collector Juragan", price: 2000000, image: "ml 3.jpeg", discount: "DISKON 15%", status: "READY", badge: "POPULER", rating: "★★★★" },
+
+    { id: 6, game: "Free Fire", title: "Akun FF Max 2 Vault 400+", price: 800000, image: "ff 3.jpeg", discount: "DISKON 30%", status: "READY", badge: "BEST SELLER", rating: "★★★★★" },
+
+    { id: 7, game: "Mobile Legends", title: "Starter Akun ML Murah", price: 60000, image: "ml 4.jpeg", discount: "HARGA PAS", status: "READY", badge: "PROMO", rating: "★★★★★" },
+
+    { id: 8, game: "Free Fire", title: "Akun FF Max 3 Vault 450+", price: 410000, image: "ff 4.jpeg", discount: "HARGA PAS", status: "READY", badge: "PROMO", rating: "★★★★★" },
+
+    { id: 9, game: "Mobile Legends", title: "Akun ML Collector Ternama", price: 500000, image: "ml 5.jpeg", discount: "HARGA PAS", status: "READY", badge: "PROMO", rating: "★★★★★" }
 ];
 
-let cart = []; // Array ini sekarang menyimpan objek produk berserta properti 'quantity'
-let slideIndex = 0; 
+
+
+let cart = [];
+let wishlist = [];
+let slideIndex = 0;
 let base64Avatar = ""; 
 
 function showSlides() {
@@ -792,8 +849,18 @@ function renderProducts(data) {
                 </div>
                 <div style="margin-top:10px; color:#facc15; font-size:14px;">${product.rating || ""}</div>
                 <h3 class="card-title">${product.title}</h3>
-                <p class="price">Rp ${product.price.toLocaleString("id-ID")}</p>
-                <button onclick="addToCart(${product.id})">Tambah ke Cart</button>
+               <p class="price">Rp ${product.price.toLocaleString("id-ID")}</p>
+
+<div style="display:flex; gap:8px; margin-top:15px;">
+    <button onclick="addToCart(${product.id})" style="flex:1;">
+        Tambah ke Cart
+    </button>
+
+    <button onclick="addWishlist(${product.id})"
+        style="width:50px;background:#ef4444;">
+        ❤️
+    </button>
+</div>
             </div>
         </div>`;
     });
@@ -833,15 +900,34 @@ function addToCart(id) {
     showToast("Produk ditambahkan!");
 }
 
+function addWishlist(id) {
+    if (!wishlist.includes(id)) {
+        wishlist.push(id);
+        showToast("Ditambahkan ke favorit ❤️");
+    } else {
+        showToast("Sudah ada di favorit");
+    }
+}
+
 function showHome() {
     document.getElementById("homePage").style.display = "block";
     document.getElementById("cartPage").style.display = "none";
+    document.getElementById("wishlistPage").style.display = "none";
 }
 
 function showCart() {
     document.getElementById("homePage").style.display = "none";
     document.getElementById("cartPage").style.display = "block";
+    document.getElementById("wishlistPage").style.display = "none";
     renderCart();
+}
+
+function showWishlist() {
+    document.getElementById("homePage").style.display = "none";
+    document.getElementById("cartPage").style.display = "none";
+    document.getElementById("wishlistPage").style.display = "block";
+
+    renderWishlist();
 }
 
 // LOOPING BARU: Render list keranjang belanja lengkap dengan fitur Tambah & Kurang kuantitas
@@ -873,6 +959,33 @@ function renderCart() {
         </div>`;
     });
     document.getElementById("totalPrice").innerText = "Rp " + total.toLocaleString("id-ID");
+}
+
+function renderWishlist() {
+    const list = document.getElementById("wishlistList");
+    list.innerHTML = "";
+
+    const wishlistProducts = products.filter(product =>
+        wishlist.includes(product.id)
+    );
+
+    if (wishlistProducts.length === 0) {
+        list.innerHTML = "<p>Belum ada produk favorit.</p>";
+        return;
+    }
+
+    wishlistProducts.forEach(product => {
+        list.innerHTML += `
+        <div class="cart-item">
+            <div>
+                <h4>${product.title}</h4>
+                <small>${product.game}</small>
+            </div>
+            <div>
+                Rp ${product.price.toLocaleString("id-ID")}
+            </div>
+        </div>`;
+    });
 }
 
 // Fungsi tombol (+) di halaman keranjang
