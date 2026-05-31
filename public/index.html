@@ -537,6 +537,7 @@
                 <span id="cartCount">0</span>
             </button>
             <button onclick="showWishlist()">❤️ Wishlist</button>
+            <button onclick="showJoki()">🎮 Joki</button>
 <button onclick="logout()">Logout</button>
             
             <div class="profile-box" onclick="openProfileModal()" title="Klik untuk ubah profil">
@@ -597,7 +598,66 @@ cursor:pointer;">
         </div>
     </div>
 </div>
+<div class="cart-page" id="jokiPage" style="display:none;">
 
+<button onclick="showHome()" style="
+margin-bottom:15px;
+background:#3b82f6;
+color:white;
+border:none;
+padding:10px 15px;
+border-radius:8px;
+cursor:pointer;">
+← Kembali ke Home
+</button>
+
+<h2>🎮 Jasa Joki</h2>
+<br>
+
+<div class="product-grid">
+
+<div class="card">
+<div class="card-body">
+<p class="game">Mobile Legends</p>
+<h3 class="card-title">Joki Epic → Legend</h3>
+<p class="price">Rp 50.000</p>
+
+<button onclick="pesanJoki('Joki Epic → Legend', 50000)">
+Pesan Joki
+</button>
+
+</div>
+</div>
+
+<div class="card">
+<div class="card-body">
+<p class="game">Mobile Legends</p>
+<h3 class="card-title">Joki Legend → Mythic</h3>
+<p class="price">Rp 100.000</p>
+
+<button onclick="pesanJoki('Joki Legend → Mythic', 100000)">
+Pesan Joki
+</button>
+
+</div>
+</div>
+
+<div class="card">
+<div class="card-body">
+<p class="game">Free Fire</p>
+<h3 class="card-title">Joki Rank Heroic</h3>
+<p class="price">Rp 75.000</p>
+
+<button onclick="pesanJoki('Joki Rank Heroic', 75000)">
+Pesan Joki
+</button>
+
+</div>
+</div>
+
+</div>
+
+</div>
 <div class="cart-page" id="wishlistPage" style="display:none;">
     <button onclick="showHome()" style="
 margin-bottom:15px;
@@ -625,6 +685,29 @@ cursor:pointer;">
             <p id="modalGame"></p>
             <br>
             <h3 id="modalPrice"></h3>
+            <div style="
+margin-top:15px;
+background:#1e293b;
+padding:12px;
+border-radius:10px;">
+
+<h4 style="margin-bottom:10px;">
+⭐ Review Pembeli
+</h4>
+
+<p style="font-size:14px;">
+⭐⭐⭐⭐⭐
+"Akun sesuai deskripsi"
+</p>
+
+<br>
+
+<p style="font-size:14px;">
+⭐⭐⭐⭐
+"Fast respon dan aman"
+</p>
+
+</div>
             <button class="checkout-btn" id="buyNowBtn">Tambah ke Cart</button>
             <button class="close-btn" onclick="closeModal()">Tutup</button>
         </div>
@@ -699,8 +782,74 @@ const products = [
 
 let cart = [];
 let wishlist = [];
+let jokiCart = [];
 let slideIndex = 0;
 let base64Avatar = ""; 
+
+
+function pesanJoki(title, price){
+
+    jokiCart = [{
+        title: title,
+        price: price,
+        quantity: 1
+    }];
+
+    checkoutJoki();
+}
+
+async function checkoutJoki() {
+
+    const total = jokiCart.reduce((sum, item) =>
+        sum + (item.price * item.quantity), 0);
+
+    document.getElementById("loading").style.display = "flex";
+
+    try {
+
+        const response = await fetch("http://localhost:3000/token", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                total: Number(total)
+            })
+        });
+
+        const data = await response.json();
+
+        snap.pay(data.token, {
+
+            onSuccess: function () {
+                document.getElementById("loading").style.display = "none";
+                showToast("Joki berhasil dipesan!");
+            },
+
+            onPending: function () {
+                document.getElementById("loading").style.display = "none";
+                showToast("Menunggu pembayaran");
+            },
+
+            onError: function () {
+                document.getElementById("loading").style.display = "none";
+                showToast("Pembayaran gagal");
+            },
+
+            onClose: function () {
+                document.getElementById("loading").style.display = "none";
+                showToast("Pembayaran dibatalkan");
+            }
+
+        });
+
+    } catch (error) {
+
+        document.getElementById("loading").style.display = "none";
+        showToast("Server error!");
+
+    }
+}
 
 function showSlides() {
     let slides = document.getElementsByClassName("slides");
@@ -849,6 +998,16 @@ function renderProducts(data) {
                 </div>
                 <div style="margin-top:10px; color:#facc15; font-size:14px;">${product.rating || ""}</div>
                 <h3 class="card-title">${product.title}</h3>
+                <p style="margin-top:8px; color:#facc15;">
+⭐⭐⭐⭐⭐ (5.0)
+</p>
+
+<p style="
+font-size:12px;
+color:#94a3b8;
+margin-top:5px;">
+"Akun aman dan terpercaya"
+</p>
                <p class="price">Rp ${product.price.toLocaleString("id-ID")}</p>
 
 <div style="display:flex; gap:8px; margin-top:15px;">
@@ -913,12 +1072,16 @@ function showHome() {
     document.getElementById("homePage").style.display = "block";
     document.getElementById("cartPage").style.display = "none";
     document.getElementById("wishlistPage").style.display = "none";
+    document.getElementById("jokiPage").style.display = "none";
 }
 
 function showCart() {
     document.getElementById("homePage").style.display = "none";
     document.getElementById("cartPage").style.display = "block";
     document.getElementById("wishlistPage").style.display = "none";
+
+    document.getElementById("jokiPage").style.display = "none";
+
     renderCart();
 }
 
@@ -1097,6 +1260,13 @@ function openModal(id) {
         addToCart(product.id);
         closeModal();
     };
+}
+
+function showJoki() {
+    document.getElementById("homePage").style.display = "none";
+    document.getElementById("cartPage").style.display = "none";
+    document.getElementById("wishlistPage").style.display = "none";
+    document.getElementById("jokiPage").style.display = "block";
 }
 
 function closeModal() {
